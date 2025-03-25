@@ -1,10 +1,8 @@
 from pathlib import Path
 import os
-import logging
 from move import move_by_extension
-
-# TODO: Add logging, error handling, edge cases.
-# TODO: When file downloads, automatically organize the files.
+from sentry_config import load_sentry_config
+from  sentry_sdk import add_breadcrumb
 
 
 def _organize_directory_content_by_extensions(
@@ -17,6 +15,12 @@ def _organize_directory_content_by_extensions(
         new_directory_name: The name of the new directory inside the source directory.
         extensions: List of extensions to move to the folder.
     """
+    add_breadcrumb(
+                category="Prep",
+                message=f"Preparing to move files with one of the extensions: {extensions}" 
+                f" from: {source_directory_path} into {new_directory_name} at {source_directory_path}",
+                level="info"
+            )
     Path(source_directory_path, new_directory_name).mkdir(exist_ok=True)
     directory_content = os.listdir(source_directory_path)
     move_by_extension(
@@ -41,8 +45,13 @@ def _organize_files(directory_path: str) -> None:
 
 def main():
     downloads_path = Path.home() / "Downloads"
+    add_breadcrumb(
+                category="Prep",
+                message=f"Preparing to organize files at: {downloads_path}",
+                level="info"
+            )
     _organize_files(downloads_path)
 
-
 if __name__ == "__main__":
+    load_sentry_config()
     main()
