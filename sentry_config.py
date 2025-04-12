@@ -2,6 +2,7 @@ import sentry_sdk
 from dotenv import load_dotenv
 import os
 
+
 def load_sentry_config():
     load_dotenv()
 

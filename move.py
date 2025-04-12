@@ -8,7 +8,7 @@ from sentry_sdk import add_breadcrumb
 
 def _handle_file_exists_at_dest(
     source_file_path: Path, dest_dir_path: Path, source_file_name: str, source_dir_path
-):
+) -> str:
     """
     Handles the situation when a file already exists at the destination.
     Adds a (<some_number>) behind the file if the file already exists at the destination.
@@ -24,8 +24,9 @@ def _handle_file_exists_at_dest(
     if os.path.exists(dest_file_path):
 
         add_breadcrumb(
-            category="path operation", message=f"Handling path for moving {source_file_path} to {dest_dir_path} from {source_dir_path} when the path is the same.", 
-            level="info"
+            category="path operation",
+            message=f"Handling path for moving {source_file_path} to {dest_dir_path} from {source_dir_path} when the path is the same.",
+            level="info",
         )
 
         _, extension = os.path.splitext(Path(source_file_name))
@@ -52,19 +53,22 @@ def _handle_file_exists_at_dest(
         os.rename(source_file_path, new_source_file_path)
 
         add_breadcrumb(
-            category="path operation", message=f" {dest_file_path} is safe to move.", 
-            level="info"
+            category="path operation",
+            message=f" {dest_file_path} is safe to move.",
+            level="info",
         )
     return os.path.basename(dest_file_path)
 
 
-def _move_file(source_dir_path: str, dest_dir_name: str, file_name: str):
+def _move_file(source_dir_path: str, dest_dir_name: str, file_name: str) -> None:
     """Performs the move itself, checks if file exists it renames the file being moved"""
 
     add_breadcrumb(
-            category="moving operation", message=f"Moving the file {file_name}", level="info"
-        )
-    
+        category="moving operation",
+        message=f"Moving the file {file_name}",
+        level="info",
+    )
+
     source_file_path = Path(source_dir_path) / Path(file_name)
     dest_dir_path = Path(source_dir_path) / Path(dest_dir_name)
 
@@ -73,7 +77,6 @@ def _move_file(source_dir_path: str, dest_dir_name: str, file_name: str):
     )
 
     shutil.move(source_file_path, dest_dir_path)
-    a = 1/0
 
 
 def _safe_move(source_directory_path: str, dest_directory_name: str, file: str) -> None:
@@ -81,7 +84,7 @@ def _safe_move(source_directory_path: str, dest_directory_name: str, file: str) 
     1. If file exists, it renames the file.
     2. If the source file is read-only a message is printed.
     """
-    # TODO: move the message up to the download_organizer.
+
     try:
         _move_file(source_directory_path, dest_directory_name, file)
     except PermissionError as e:
@@ -111,10 +114,10 @@ def move_by_extension(
         directory_content: The content of the source directory, files and folders.
     """
     add_breadcrumb(
-                category="Prep",
-                message=f"Prepearing to move from {source_directory_path} to {new_directory_name} at {source_directory_path}",
-                level="info",
-            )
+        category="Prep",
+        message=f"Prepearing to move from {source_directory_path} to {new_directory_name} at {source_directory_path}",
+        level="info",
+    )
     for file in directory_content:
         _, extension = os.path.splitext(file)
 
@@ -127,3 +130,4 @@ def move_by_extension(
             )
 
             _safe_move(source_directory_path, new_directory_name, file)
+    
