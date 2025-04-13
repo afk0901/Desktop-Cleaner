@@ -102,7 +102,6 @@ def _safe_move(source_directory_path: str, dest_directory_name: str, file: str) 
 def move_by_extension(
     source_directory_path: str,
     new_directory_name: str,
-    extensions: list[str],
     directory_content: list[str],
 ) -> None:
     """
@@ -110,24 +109,12 @@ def move_by_extension(
     Args:
         source_directory_path: The path of the source directory.
         new_directory_name: New directory name that will be stored in the source directory.
-        extensions: List of extensions to categorize such as .png, .jpeg, .jpg and so on for images.
         directory_content: The content of the source directory, files and folders.
     """
-    add_breadcrumb(
-        category="Prep",
-        message=f"Prepearing to move from {source_directory_path} to {new_directory_name} at {source_directory_path}",
-        level="info",
-    )
     for file in directory_content:
-        _, extension = os.path.splitext(file)
-
-        if extension.lower() in extensions:
-
-            add_breadcrumb(
-                category="moving operation",
-                message=f"Performing move operation with _safe move for the file {file}",
-                level="info",
-            )
-
-            _safe_move(source_directory_path, new_directory_name, file)
-    
+        add_breadcrumb(
+            category="moving operation",
+            message=f"Performing move operation with _safe move for the file {file}",
+            level="info",
+        )
+        _safe_move(source_directory_path, new_directory_name, file)

@@ -4,10 +4,19 @@ from move import move_by_extension
 from sentry_config import load_sentry_config
 from sentry_sdk import add_breadcrumb
 from win_reg_reader import get_windows_desktop_path
+from filters import filter_by_extensions
+import ctypes
 
+def refresh_desktop():
+    SHCNE_ASSOCCHANGED = 0x08000000
+    SHCNF_IDLIST = 0x0000
+    ctypes.windll.shell32.SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, None, None)
 
 def _organize_directory_content_by_extensions(
-    source_directory_path: str, new_directory_name: str, extensions: list[str]
+    source_directory_path: str,
+    source_directory_content,
+    new_directory_name: str,
+    extensions: list[str],
 ) -> None:
     """
     Creates a new directory in the source directory, moves the files according to the extensions list to the new directory.
@@ -16,32 +25,48 @@ def _organize_directory_content_by_extensions(
         new_directory_name: The name of the new directory inside the source directory.
         extensions: List of extensions to move to the folder.
     """
+    filtered_source_directory_content = filter_by_extensions(
+        source_directory_content, extensions
+    )
+
     add_breadcrumb(
         category="Prep",
         message=f"Preparing to move files with one of the extensions: {extensions}"
         f" from: {source_directory_path} into {new_directory_name} at {source_directory_path}",
         level="info",
     )
+    if len(filtered_source_directory_content) > 0:
+        Path(source_directory_path, new_directory_name).mkdir(exist_ok=True)
 
-    Path(source_directory_path, new_directory_name).mkdir(exist_ok=True)
-    directory_content = os.listdir(source_directory_path)
     move_by_extension(
-        source_directory_path, new_directory_name, extensions, directory_content
+        source_directory_path, new_directory_name, filtered_source_directory_content
     )
+    refresh_desktop()
 
 
-def _organize_files(directory_path: str) -> None:
+def _organize_files(source_directory_path: str) -> None:
     """
     Organizes files in a folder to subfolder by extensions.
     Args:
         directory_path: The path of the directory to organize.
     """
+
+    source_directory_content = os.listdir(source_directory_path)
+
     _organize_directory_content_by_extensions(
-        directory_path, "images", [".jpg", "jpeg", ".png", ".webp", ".bmp"]
+        source_directory_path,
+        source_directory_content,
+        "images",
+        [".jpg", "jpeg", ".png", ".webp", ".bmp"],
     )
-    _organize_directory_content_by_extensions(directory_path, "PDF Documents", [".pdf"])
     _organize_directory_content_by_extensions(
-        directory_path, "Word Documents", [".doc", ".docx"]
+        source_directory_path, source_directory_content, "PDF Documents", [".pdf"]
+    )
+    _organize_directory_content_by_extensions(
+        source_directory_path,
+        source_directory_content,
+        "Word Documents",
+        [".doc", ".docx", ".odt"],
     )
 
 
@@ -54,6 +79,7 @@ def organize() -> None:
         message=f"Preparing to organize files at: {path}",
         level="info",
     )
+
     _organize_files(path)
 
 
