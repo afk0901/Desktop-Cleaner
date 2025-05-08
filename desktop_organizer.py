@@ -7,10 +7,13 @@ from win_reg_reader import get_windows_desktop_path
 from filters import filter_by_extensions
 import ctypes
 
-def refresh_desktop():
+
+def refresh_windows_desktop() -> None:
+    """Refreshes the Desktop itself to temporarly prevent caching."""
     SHCNE_ASSOCCHANGED = 0x08000000
     SHCNF_IDLIST = 0x0000
     ctypes.windll.shell32.SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, None, None)
+
 
 def _organize_directory_content_by_extensions(
     source_directory_path: str,
@@ -35,13 +38,14 @@ def _organize_directory_content_by_extensions(
         f" from: {source_directory_path} into {new_directory_name} at {source_directory_path}",
         level="info",
     )
+    # Preventing creating empty folders.
     if len(filtered_source_directory_content) > 0:
         Path(source_directory_path, new_directory_name).mkdir(exist_ok=True)
 
     move_by_extension(
         source_directory_path, new_directory_name, filtered_source_directory_content
     )
-    refresh_desktop()
+    refresh_windows_desktop()
 
 
 def _organize_files(source_directory_path: str) -> None:
@@ -67,6 +71,15 @@ def _organize_files(source_directory_path: str) -> None:
         source_directory_content,
         "Word Documents",
         [".doc", ".docx", ".odt"],
+    )
+    _organize_directory_content_by_extensions(
+        source_directory_path,
+        source_directory_content,
+        "Excel files",
+        [".csv", ".xlsx"],
+    )
+    _organize_directory_content_by_extensions(
+        source_directory_path, source_directory_content, "Text files", [".txt"]
     )
 
 

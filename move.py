@@ -98,7 +98,6 @@ def _safe_move(source_directory_path: str, dest_directory_name: str, file: str) 
         print(f"Unexpected error while moving {file}: {e}")
 
 
-# Integrate test me
 def move_by_extension(
     source_directory_path: str,
     new_directory_name: str,
