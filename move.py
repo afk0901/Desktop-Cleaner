@@ -81,8 +81,8 @@ def _move_file(source_dir_path: str, dest_dir_name: str, file_name: str) -> None
 
 def _safe_move(source_directory_path: str, dest_directory_name: str, file: str) -> None:
     """Moves a file inside the source directory to another directory and handles edge cases.
-    1. If file exists, it renames the file.
-    2. If the source file is read-only a message is printed.
+       If the source file is read-only a message is printed.
+       Catches any other exception and prints an appropriate message.
     """
 
     try:
@@ -104,7 +104,7 @@ def move_by_extension(
     directory_content: list[str],
 ) -> None:
     """
-    Checks if the extension is in the extensions list - if so, moves the files in the new directory.
+    Moves files from the source directory to a new directory inside the source directory.
     Args:
         source_directory_path: The path of the source directory.
         new_directory_name: New directory name that will be stored in the source directory.

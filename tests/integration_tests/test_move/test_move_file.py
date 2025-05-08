@@ -1,6 +1,6 @@
 import pytest
 from move import _move_file
-from tests.integration_tests.move_set_up_tear_down import setUpTearDown
+from tests.integration_tests.test_move.move_set_up_tear_down import setUpTearDown
 from pathlib import Path
 
 
