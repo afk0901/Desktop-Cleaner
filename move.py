@@ -83,19 +83,23 @@ def _safe_move(source_directory_path: str, dest_directory_name: str, file: str) 
     """Moves a file inside the source directory to another directory and handles edge cases.
        If the source file is read-only a message is printed.
        Catches any other exception and prints an appropriate message.
+       Args:
+        source_directory_path: The path of the source directory.
+        dest_directory_name: New directory name that will be stored in the source directory.
+        file: The file to be moved.
     """
 
-    try:
-        _move_file(source_directory_path, dest_directory_name, file)
-    except PermissionError as e:
-        capture_exception(e)
-        print(
-            f"Permission denied for: {file}. Please check if the file is in use by another program or contact your administrator."
-        )
-
-    except Exception as e:
-        capture_exception(e)
-        print(f"Unexpected error while moving {file}: {e}")
+    #try:
+    _move_file(source_directory_path, dest_directory_name, file)
+    #except PermissionError as e:
+    #    capture_exception(e)
+    #    print(
+    #        f"Permission denied for: {file}. Please check if the file is in use by another program or contact your administrator."
+    #    )
+#
+    #except Exception as e:
+    #    capture_exception(e)
+    #    print(f"Unexpected error while moving {file}: {e}")
 
 
 def move_by_extension(

@@ -1,10 +1,11 @@
 import pytest
 from move import _move_file
-from tests.integration_tests.test_move.move_set_up_tear_down import setUpTearDown
+from tests.move_set_up_tear_down import setUpTearDown
 from pathlib import Path
 
 
 class TestMoveFile:
+
     def setup_method(self):
         self.setup_teardown = setUpTearDown()
         self.setup_teardown.setup()
