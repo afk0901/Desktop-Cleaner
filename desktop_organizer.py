@@ -1,6 +1,6 @@
 from pathlib import Path
 import os
-from move import move_by_extension
+from move import move_multiple_folder_contents
 from sentry_config import load_sentry_config
 from sentry_sdk import add_breadcrumb
 from win_reg_reader import get_windows_desktop_path
@@ -15,35 +15,54 @@ def refresh_windows_desktop() -> None:
     ctypes.windll.shell32.SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, None, None)
 
 
+def create_directory_by_filtered_directory(source_directory_path: str, 
+                                    filtered_directory_content: list[str],
+                                    new_directory_name: str) -> None:
+    """
+    creates a new directory if filtered_source_directory_content is not empty.
+    Args:
+        source_directory_path: Path of the source directory.
+        new_directory_name: The name of the new directory inside the source directory.
+    """
+
+    if len(filtered_directory_content) > 0:
+        Path(source_directory_path, new_directory_name).mkdir(exist_ok=True)
+
+
 def _organize_directory_content_by_extensions(
-    source_directory_path: str,
+    source_directory_path,
     source_directory_content,
-    new_directory_name: str,
-    extensions: list[str],
+    dest_directory_name,
+    extensions,
 ) -> None:
     """
-    Creates a new directory in the source directory, moves the files according to the extensions list to the new directory.
+    Creates a new directory in the source directory, moves the files according to the extensions 
+    list to the destination directory.
     Args:
         source_directory_path: Path of the source directory.
         new_directory_name: The name of the new directory inside the source directory.
         extensions: List of extensions to move to the folder.
     """
-    filtered_source_directory_content = filter_by_extensions(
-        source_directory_content, extensions
-    )
-
     add_breadcrumb(
         category="Prep",
         message=f"Preparing to move files with one of the extensions: {extensions}"
-        f" from: {source_directory_path} into {new_directory_name} at {source_directory_path}",
+        f" from: {source_directory_path} into {dest_directory_name} at {source_directory_path}",
         level="info",
     )
-    # Preventing creating empty folders.
-    if len(filtered_source_directory_content) > 0:
-        Path(source_directory_path, new_directory_name).mkdir(exist_ok=True)
 
-    move_by_extension(
-        source_directory_path, new_directory_name, filtered_source_directory_content
+    filtered_source_directory_content = filter_by_extensions(
+        source_directory_content, 
+        extensions
+    )
+    
+    create_directory_by_filtered_directory(source_directory_path, 
+                                    filtered_source_directory_content,
+                                    dest_directory_name)
+
+    move_multiple_folder_contents(
+        source_directory_path, 
+        dest_directory_name, 
+        filtered_source_directory_content
     )
     refresh_windows_desktop()
 
