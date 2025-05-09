@@ -8,7 +8,7 @@ def get_windows_desktop_path() -> str:
     As for Windows, the Desktop path is not always the same, for example if OneDrive
     is used. Therefore, registry is used instead.
     """
-    
+
     key = r"Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders"
     add_breadcrumb(
         category="Registry",
