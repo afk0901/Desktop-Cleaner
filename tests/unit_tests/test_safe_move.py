@@ -1,4 +1,4 @@
-from tests.move_set_up_tear_down import setUpTearDown
+from tests.set_up_tear_down import setUpTearDown
 from unittest.mock import patch
 from move import _safe_move
 

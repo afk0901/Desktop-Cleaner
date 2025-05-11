@@ -15,7 +15,7 @@ def refresh_windows_desktop() -> None:
     ctypes.windll.shell32.SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, None, None)
 
 
-def create_directory_by_filtered_directory(
+def create_directory_by_filtered_directory_content(
     source_directory_path: str,
     filtered_directory_content: list[str],
     new_directory_name: str,
@@ -56,7 +56,7 @@ def _organize_directory_content_by_extensions(
         source_directory_content, extensions
     )
 
-    create_directory_by_filtered_directory(
+    create_directory_by_filtered_directory_content(
         source_directory_path, filtered_source_directory_content, dest_directory_name
     )
 

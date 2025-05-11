@@ -1,4 +1,4 @@
-from tests.move_set_up_tear_down import setUpTearDown
+from tests.set_up_tear_down import setUpTearDown
 from move import move_multiple_files_by_dir_contents
 from unittest.mock import patch
 
@@ -33,12 +33,14 @@ class TestMoveMultipleFilesByDirContents:
         )
 
         assert safe_move_mock.call_count == len(directory_content)
-    
+
     @patch("move._safe_move")
-    def test_successful_move_multiple_files_with_empty_directory_content(self, safe_move_mock):
-        
+    def test_successful_move_multiple_files_with_empty_directory_content(
+        self, safe_move_mock
+    ):
+
         directory_content = []
-        
+
         move_multiple_files = move_multiple_files_by_dir_contents(
             self.source_dir,
             self.new_directory_name,

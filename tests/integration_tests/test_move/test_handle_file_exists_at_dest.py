@@ -1,5 +1,5 @@
 from move import _handle_file_exists_at_dest
-from tests.move_set_up_tear_down import setUpTearDown
+from tests.set_up_tear_down import setUpTearDown
 
 
 class TestHandleFileExistsAtDest:
