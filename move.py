@@ -102,7 +102,7 @@ def _safe_move(source_directory_path: str, dest_directory_name: str, file: str) 
         print(f"Unexpected error while moving {file}: {e}")
 
 
-def move_multiple_folder_contents(
+def move_multiple_files_by_dir_contents(
     source_directory_path: str,
     new_directory_name: str,
     directory_content: list[str],

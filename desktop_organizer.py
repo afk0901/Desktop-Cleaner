@@ -1,6 +1,6 @@
 from pathlib import Path
 import os
-from move import move_multiple_folder_contents
+from move import move_multiple_files_by_dir_contents
 from sentry_config import load_sentry_config
 from sentry_sdk import add_breadcrumb
 from win_reg_reader import get_windows_desktop_path
@@ -15,9 +15,11 @@ def refresh_windows_desktop() -> None:
     ctypes.windll.shell32.SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, None, None)
 
 
-def create_directory_by_filtered_directory(source_directory_path: str, 
-                                    filtered_directory_content: list[str],
-                                    new_directory_name: str) -> None:
+def create_directory_by_filtered_directory(
+    source_directory_path: str,
+    filtered_directory_content: list[str],
+    new_directory_name: str,
+) -> None:
     """
     creates a new directory if filtered_source_directory_content is not empty.
     Args:
@@ -36,7 +38,7 @@ def _organize_directory_content_by_extensions(
     extensions,
 ) -> None:
     """
-    Creates a new directory in the source directory, moves the files according to the extensions 
+    Creates a new directory in the source directory, moves the files according to the extensions
     list to the destination directory.
     Args:
         source_directory_path: Path of the source directory.
@@ -51,18 +53,15 @@ def _organize_directory_content_by_extensions(
     )
 
     filtered_source_directory_content = filter_by_extensions(
-        source_directory_content, 
-        extensions
+        source_directory_content, extensions
     )
-    
-    create_directory_by_filtered_directory(source_directory_path, 
-                                    filtered_source_directory_content,
-                                    dest_directory_name)
 
-    move_multiple_folder_contents(
-        source_directory_path, 
-        dest_directory_name, 
-        filtered_source_directory_content
+    create_directory_by_filtered_directory(
+        source_directory_path, filtered_source_directory_content, dest_directory_name
+    )
+
+    move_multiple_files_by_dir_contents(
+        source_directory_path, dest_directory_name, filtered_source_directory_content
     )
     refresh_windows_desktop()
 
