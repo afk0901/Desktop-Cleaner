@@ -10,9 +10,10 @@ import ctypes
 
 def refresh_windows_desktop() -> None:
     """Refreshes the Desktop itself to temporarly prevent caching."""
-    SHCNE_ASSOCCHANGED = 0x08000000
-    SHCNF_IDLIST = 0x0000
-    ctypes.windll.shell32.SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, None, None)
+    # Constant telling Windows that file associations changed.
+    # causes Windows to refresh the desktop and update the desktop.
+    FILE_ASSOCCHANGED = 0x08000000
+    ctypes.windll.shell32.SHChangeNotify(FILE_ASSOCCHANGED, None, None, None)
 
 
 def create_directory_by_filtered_directory_content(
