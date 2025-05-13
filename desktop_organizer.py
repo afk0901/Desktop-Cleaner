@@ -5,16 +5,6 @@ from sentry_config import load_sentry_config
 from sentry_sdk import add_breadcrumb
 from win_reg_reader import get_windows_desktop_path
 from filters import filter_by_extensions
-import ctypes
-
-
-def refresh_windows_desktop() -> None:
-    """Refreshes the Desktop itself to temporarly prevent caching."""
-    # Constant telling Windows that file associations changed.
-    # causes Windows to refresh the desktop and update the desktop.
-    FILE_ASSOCCHANGED = 0x08000000
-    ctypes.windll.shell32.SHChangeNotify(FILE_ASSOCCHANGED, None, None, None)
-
 
 def create_directory_by_filtered_directory_content(
     source_directory_path: str,
@@ -64,7 +54,6 @@ def _organize_directory_content_by_extensions(
     move_multiple_files_by_dir_contents(
         source_directory_path, dest_directory_name, filtered_source_directory_content
     )
-    refresh_windows_desktop()
 
 
 def _organize_files(source_directory_path: str) -> None:
@@ -94,11 +83,11 @@ def _organize_files(source_directory_path: str) -> None:
     _organize_directory_content_by_extensions(
         source_directory_path,
         source_directory_content,
-        "Excel files",
-        [".csv", ".xlsx"],
+        "Excel Documents",
+        [".csv", ".xlsx", ".ods"],
     )
     _organize_directory_content_by_extensions(
-        source_directory_path, source_directory_content, "Text files", [".txt"]
+        source_directory_path, source_directory_content, "Text Documents", [".txt"]
     )
 
 
