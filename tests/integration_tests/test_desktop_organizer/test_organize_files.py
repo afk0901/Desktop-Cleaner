@@ -57,7 +57,7 @@ class TestOrganizeDirectoryContentByExtensions:
 
     def test_organize_excel_files_in_excel_files_folder(self):
         _organize_files(self.source_directory_path)
-        new_dir_content = self.list_new_dir_content("Excel files")
+        new_dir_content = self.list_new_dir_content("Excel Documents")
 
         assert (
             new_dir_content.sort()
@@ -80,7 +80,7 @@ class TestOrganizeDirectoryContentByExtensions:
 
     def test_organize_text_files_in_text_files_folder(self):
         _organize_files(self.source_directory_path)
-        new_dir_content = self.list_new_dir_content("Text files")
+        new_dir_content = self.list_new_dir_content("Text Documents")
 
         assert (
             new_dir_content.sort()
