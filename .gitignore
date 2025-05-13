@@ -2,3 +2,6 @@ __pycache__/
 .vscode/
 .env
 .coverage
+build/
+dist/
+*.spec
