@@ -1,0 +1,7 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Package Id="DesktopOrganizer" Name="Desktop Organizer"
+           Manufacturer="Arnar Freyr Kristinsson" Version="1.0.0">
+    <File Source="..\Desktop_Organizer\dist\desktop_organizer.exe" KeyPath="yes" />
+  </Package>
+  
+</Wix>
