@@ -18,7 +18,7 @@ class setUpTearDown:
 
     def get_destination_dir_path(self):
         return self.test_dir / self.get_destination_dir_name()
-    
+
     def get_source_directory_content(self):
         return [
             "test_file1.jpg",
@@ -30,14 +30,15 @@ class setUpTearDown:
             "test_file6.webp",
             "test_file0.doc",
             "test_file10.odt",
-            "test_file12.csv", 
+            "test_file12.csv",
             "test_file2.xlsx",
             "test_file7.bmp",
         ]
-    
-    def initialize_test_dir(self, source_directory_path: str, 
-                            source_directory_content: list = None):
-        
+
+    def initialize_test_dir(
+        self, source_directory_path: str, source_directory_content: list = None
+    ):
+
         for file_name in source_directory_content:
             file_path = Path(source_directory_path) / file_name
             file_path.touch()

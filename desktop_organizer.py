@@ -113,6 +113,7 @@ def organize() -> None:
 
     _organize_files(path)
 
+
 def main():
     print("Cleaning your Desktop, please hold...")
     organize()

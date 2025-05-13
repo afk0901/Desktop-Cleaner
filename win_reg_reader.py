@@ -1,10 +1,12 @@
 import winreg
 from sentry_sdk import capture_exception, add_breadcrumb
 
+
 def _query_windows_desktop_path(key) -> str:
     reg = winreg.OpenKey(winreg.HKEY_CURRENT_USER, key)
     desktop_path, type = winreg.QueryValueEx(reg, "Desktop")
     return desktop_path
+
 
 def get_windows_desktop_path() -> str:
     """
