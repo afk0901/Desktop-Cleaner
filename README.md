@@ -1,3 +1,5 @@
+
+
 # 🧹 Desktop Organizer – Python Automation Tool
 
 Tired of your cluttered Desktop?
@@ -6,26 +8,38 @@ Tired of your cluttered Desktop?
 
 Whether it's scattered PDFs, Word docs, Excel sheets, or plain text files, this script puts everything in its place. Clean workspace, clear mind.
 
-## ✅ Current Features
+## 🔹 Highlights
+- Built in pure Python
+- Packaged as `.exe` (runs without Python installed)
+- Uses Windows Registry to detect Desktop (OneDrive-safe)
+- Fully tested with 26 Pytest test cases
+- Designed for extensibility and safety
 
-- Automatically sorts:
+## Current Features
+
+Automatically sorts:
   - `.pdf` → `PDF Documents`
   - `.docx`, `.doc` → `Word Documents`
   - `.xlsx`, `.xls`, `.odt` → `Excel Documents`
   - `.txt` → `Text Documents`
 - Resolves correct Desktop path (supports OneDrive and standard setups)
+- Packaged as .exe – no Python needed for users"
+
+## How to install the project's dependencies
+
+Run this command in the terminal: `pip install -r ./requirements.txt` and 
+that should be it.
 
 ## How to run the tool
 
 Download the .exe from this repository or clone the repo and follow the instructions below.
 
-The main entry file is desktop_organizer.py. Run it in your IDE or run this command inside the
-root directory of the project: `python desktop_organizer.py`. This command should start the
-tool.
+The main entry file is desktop_organizer.py. Run it in your IDE or run this command inside the root directory of the project: 
+`python desktop_organizer.py`. This command should start the tool.
 
 ## 🧪 Tests
 
-This project includes automated tests to verify file movement behavior and handle edge cases safely.
+This project includes automated tests to verify file movement behavior and handling edge cases.
 
-The project uses Pytest for all it's tests. Run it in your IDE or run Pytest manually in the 
-terminal by simply write `python pytest` in the terminal in the root of the project and hit enter and it should run all the tests. 
+The project uses Pytest for all it's tests. You can run the tests in your IDE or run them all manually in the 
+terminal by simply writing `python -m pytest` in the terminal in the root of the project and hit enter.
