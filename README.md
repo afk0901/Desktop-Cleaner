@@ -17,7 +17,7 @@ Whether it's scattered PDFs, Word docs, Excel sheets, or plain text files, this 
 
 ## How to run the tool
 
-Download the installer from this repository or clone the repo and follow the instructions below.
+Download the .exe from this repository or clone the repo and follow the instructions below.
 
 The main entry file is desktop_organizer.py. Run it in your IDE or run this command inside the
 root directory of the project: `python desktop_organizer.py`. This command should start the
