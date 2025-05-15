@@ -1,0 +1,4 @@
+sentry-sdk
+dotenv
+pytest-cov
+pytest
