@@ -29,6 +29,7 @@ Automatically sorts:
   - `.txt` → `Text Documents`
 - Resolves correct Desktop path (supports OneDrive and standard setups)
 - Packaged as .exe – no Python needed for users
+- Renames files at destination if they have the same name
 
 ## How to install the project's dependencies
 
