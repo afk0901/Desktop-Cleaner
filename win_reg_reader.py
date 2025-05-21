@@ -1,14 +1,24 @@
 import winreg
 from sentry_sdk import capture_exception, add_breadcrumb
+from pathlib import Path
+from error_handling import error_message_prompt_and_exit
 
+def _query_windows_registry(key: str, name: str) -> Path:
+    """
+    Queries the Windows registry by a string indicating the value to query.
 
-def _query_windows_desktop_path(key) -> str:
+    Args:
+        key: A string indicating the registry key to query.
+        name: A string indicating the value to query.
+
+    Returns: The value of the registry key by the name.
+    """
     reg = winreg.OpenKey(winreg.HKEY_CURRENT_USER, key)
-    desktop_path, type = winreg.QueryValueEx(reg, "Desktop")
-    return desktop_path
+    desktop_path, type = winreg.QueryValueEx(reg, name)
+    return Path(desktop_path)
 
 
-def get_windows_desktop_path() -> str:
+def get_windows_desktop_path() -> Path:
     """
     Gets the path for the Desktop from the registry.
     As for Windows, the Desktop path is not always the same, for example if OneDrive
@@ -16,22 +26,20 @@ def get_windows_desktop_path() -> str:
     """
 
     key = r"Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders"
+
     add_breadcrumb(
         category="Registry",
         message="Referencing and reading desktop path from registry",
         level="info",
     )
     try:
-        desktop_path = _query_windows_desktop_path(key)
+        desktop_path = _query_windows_registry(key, "Desktop")
+        return desktop_path
     except OSError as e:
         capture_exception(e)
-        print(
-            "Failed to read desktop path in the registry. Make sure you have the correct permissions and then try again."
-        )
-        return None
-
+        error_msg = "Failed to read desktop path in the registry. Make sure you have the correct permissions and then try again."
+        error_message_prompt_and_exit(error_msg)
     except Exception as e:
         capture_exception(e)
-        print("Failed to get the windows desktop path. Cause unknown.")
-        return None
-    return desktop_path
+        error_msg = "Failed to get the windows desktop path. Cause unknown."
+        error_message_prompt_and_exit(error_msg)

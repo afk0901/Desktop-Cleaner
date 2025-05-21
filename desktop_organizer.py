@@ -6,8 +6,9 @@ from sentry_sdk import add_breadcrumb
 from win_reg_reader import get_windows_desktop_path
 from filters import filter_by_extensions
 
+
 def create_directory_by_filtered_directory_content(
-    source_directory_path: str,
+    source_directory_path: Path,
     filtered_directory_content: list[str],
     new_directory_name: str,
 ) -> None:
@@ -23,10 +24,10 @@ def create_directory_by_filtered_directory_content(
 
 
 def _organize_directory_content_by_extensions(
-    source_directory_path,
-    source_directory_content,
-    dest_directory_name,
-    extensions,
+    source_directory_path: Path,
+    source_directory_content: list[str],
+    dest_directory_name: str,
+    extensions: list[str],
 ) -> None:
     """
     Creates a new directory in the source directory, moves the files according to the extensions
@@ -56,39 +57,34 @@ def _organize_directory_content_by_extensions(
     )
 
 
-def _organize_files(source_directory_path: str) -> None:
+def _organize_files(source_directory_path: Path) -> None:
     """
-    Organizes files in a folder to subfolder by extensions.
+    Organizes files in a source directory to subfolder in the same directory by extensions.
     Args:
         directory_path: The path of the directory to organize.
     """
 
     source_directory_content = os.listdir(source_directory_path)
 
-    _organize_directory_content_by_extensions(
-        source_directory_path,
-        source_directory_content,
-        "images",
-        [".jpg", "jpeg", ".png", ".webp", ".bmp"],
+    FILE_CATEGORIES = {
+        "images": [".jpg", ".jpeg", ".png", ".webp", ".bmp"],
+        "PDF Documents": [".pdf"],
+        "Word Documents": [".doc", ".docx", ".odt"],
+        "Excel Documents": [".csv", ".xlsx", ".ods"],
+        "Text Documents": [".txt"],
+    }
+
+    add_breadcrumb(
+        category="Prep",
+        message=f"Preparing to move files from the file categories",
+        level="info",
     )
-    _organize_directory_content_by_extensions(
-        source_directory_path, source_directory_content, "PDF Documents", [".pdf"]
-    )
-    _organize_directory_content_by_extensions(
-        source_directory_path,
-        source_directory_content,
-        "Word Documents",
-        [".doc", ".docx", ".odt"],
-    )
-    _organize_directory_content_by_extensions(
-        source_directory_path,
-        source_directory_content,
-        "Excel Documents",
-        [".csv", ".xlsx", ".ods"],
-    )
-    _organize_directory_content_by_extensions(
-        source_directory_path, source_directory_content, "Text Documents", [".txt"]
-    )
+
+    for category, extensions in FILE_CATEGORIES.items():
+
+        _organize_directory_content_by_extensions(
+            source_directory_path, source_directory_content, category, extensions
+        )
 
 
 def organize() -> None:
@@ -104,7 +100,7 @@ def organize() -> None:
     _organize_files(path)
 
 
-def main():
+def main() -> None:
     print("Cleaning your Desktop, please hold...")
     organize()
     print("Cleaning is complete. You may close the application.")

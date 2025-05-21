@@ -20,14 +20,18 @@ class TestSafeMove:
         _safe_move(self.source_dir, self.destination_dir_name, "test_file.txt")
         assert move_file_mock.call_count == 1
 
+    @patch("move.error_message_prompt_and_exit")
     @patch("move._move_file", side_effect=PermissionError)
     def test_safe_move_permission_should_not_raise_permission_error(
-        self, move_file_mock
+        self, move_file_mock, error_message_mock
     ):
-
         _safe_move(self.source_dir, self.destination_dir_name, "test_file.txt")
+        assert error_message_mock.call_count == 1
 
+    @patch("move.error_message_prompt_and_exit")
     @patch("move._move_file", side_effect=Exception)
-    def test_safe_move_should_not_raise_unexpected_error(self, move_file_mock):
-
-        _safe_move(self.source_dir, self.destination_dir_name, "test_file.txt")
+    def test_safe_move_should_not_raise_unexpected_error(
+         self, move_file_mock, error_message_mock
+         ):
+            _safe_move(self.source_dir, self.destination_dir_name, "test_file.txt")
+            assert error_message_mock.call_count == 1

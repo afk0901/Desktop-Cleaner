@@ -34,6 +34,16 @@ class TestMoveFile:
         with pytest.raises(FileNotFoundError):
             _move_file(self.source_dir, self.destination_dir.name, file_path.name)
 
+    def test_move_with_no_extension(self):
+        file_path = self.source_dir / "test_file"
+        file_path.write_text("This is a test file without an extension.")
+
+        _move_file(self.source_dir, self.destination_dir.name, file_path.name)
+
+        moved_file_path = self.destination_dir / "test_file"
+        assert moved_file_path.exists()
+        assert not file_path.exists()
+
 
 class TestFileExistsAtDestinationWithMoveFile:
 

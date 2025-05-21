@@ -12,7 +12,7 @@ Whether it's scattered PDFs, Word docs, Excel sheets, or plain text files, this 
 - Built in pure Python
 - Packaged as `.exe` (runs without Python installed)
 - Uses Windows Registry to detect Desktop (OneDrive-safe)
-- Fully tested with 26 Pytest test cases
+- Fully tested with 27 Pytest test cases
 - Designed for extensibility and safety
 
 ## 🖥️ Desktop Organizer – Demo

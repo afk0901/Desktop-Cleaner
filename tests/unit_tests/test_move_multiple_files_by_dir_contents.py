@@ -35,6 +35,22 @@ class TestMoveMultipleFilesByDirContents:
         assert safe_move_mock.call_count == len(directory_content)
 
     @patch("move._safe_move")
+    def test_successful_move_multiple_files_only_folders(self, safe_move_mock):
+
+        directory_content = [
+            "subdir1",
+            "subdir2",
+        ]
+
+        move_multiple_files_by_dir_contents(
+            self.source_dir,
+            self.new_directory_name,
+            directory_content,
+        )
+
+        assert safe_move_mock.call_count == 2
+
+    @patch("move._safe_move")
     def test_successful_move_multiple_files_with_empty_directory_content(
         self, safe_move_mock
     ):

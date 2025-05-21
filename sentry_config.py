@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 import os
 
 
-def load_sentry_config():
+def load_sentry_config() -> None:
     load_dotenv()
 
     env = os.getenv("environment")

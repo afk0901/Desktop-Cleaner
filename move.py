@@ -4,10 +4,11 @@ import os
 import re
 from sentry_sdk import capture_exception
 from sentry_sdk import add_breadcrumb
+from error_handling import error_message_prompt_and_exit
 
 
 def _handle_file_exists_at_dest(
-    source_file_path: Path, dest_dir_path: Path, source_file_name: str, source_dir_path
+    source_file_path: Path, dest_dir_path: Path, source_dir_path: Path
 ) -> str:
     """
     Handles the situation when a file already exists at the destination.
@@ -19,7 +20,8 @@ def _handle_file_exists_at_dest(
         source_dir_path: Full path to the source directory
     """
 
-    dest_file_path = Path(dest_dir_path) / Path(source_file_name)
+    source_file_name = Path(source_file_path).name
+    dest_file_path = Path(dest_dir_path) / source_file_name
 
     if os.path.exists(dest_file_path):
 
@@ -32,7 +34,7 @@ def _handle_file_exists_at_dest(
         _, extension = os.path.splitext(Path(source_file_name))
 
         num = 0
-        new_source_file_path = source_file_path.stem
+        new_source_file_path = source_file_path
         source_file_name = source_file_path.stem
         new_source_file = source_file_path.stem
 
@@ -60,7 +62,7 @@ def _handle_file_exists_at_dest(
     return os.path.basename(dest_file_path)
 
 
-def _move_file(source_dir_path: str, dest_dir_name: str, file_name: str) -> None:
+def _move_file(source_dir_path: Path, dest_dir_name: str, file_name: str) -> None:
     """Performs the move itself, checks if file exists it renames the file being moved"""
 
     add_breadcrumb(
@@ -73,13 +75,13 @@ def _move_file(source_dir_path: str, dest_dir_name: str, file_name: str) -> None
     dest_dir_path = Path(source_dir_path) / Path(dest_dir_name)
 
     source_file_path = Path(source_dir_path) / _handle_file_exists_at_dest(
-        source_file_path, dest_dir_path, file_name, source_dir_path
+        source_file_path, dest_dir_path, source_dir_path
     )
 
     shutil.move(source_file_path, dest_dir_path)
 
 
-def _safe_move(source_directory_path: str, dest_directory_name: str, file: str) -> None:
+def _safe_move(source_directory_path: Path, dest_directory_name: str, file: str) -> None:
     """Moves a file inside the source directory to another directory and handles edge cases.
     If the source file is read-only a message is printed.
     Catches any other exception and prints an appropriate message.
@@ -93,17 +95,18 @@ def _safe_move(source_directory_path: str, dest_directory_name: str, file: str) 
         _move_file(source_directory_path, dest_directory_name, file)
     except PermissionError as e:
         capture_exception(e)
-        print(
-            f"Permission denied for: {file}. Please check if the file is in use by another program or contact your administrator."
-        )
+        error_msg = f"Permission denied for: {file}. \
+        Please check if the file is in use by another program or contact your administrator."
+        error_message_prompt_and_exit(error_msg)
 
     except Exception as e:
         capture_exception(e)
-        print(f"Unexpected error while moving {file}: {e}")
+        error_msg = f"Unexpected error while moving {file}: {e}"
+        error_message_prompt_and_exit(error_msg)
 
 
 def move_multiple_files_by_dir_contents(
-    source_directory_path: str,
+    source_directory_path: Path,
     new_directory_name: str,
     directory_content: list[str],
 ) -> None:
